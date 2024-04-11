@@ -8,7 +8,6 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\utils\Config;
-use pocketmine\utils\TextFormat as TF;
 
 class Loader extends PluginBase implements Listener {
 
