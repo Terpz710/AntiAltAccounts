@@ -8,44 +8,37 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\utils\Config;
-use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
 class Loader extends PluginBase implements Listener {
 
-    public function onLoad(): void{
-        $this->getLogger()->info("AntiAltAccounts has been enabled!");
-    }
-
     public function onEnable(): void{
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->saveDefaultConfig();
     }
 
-    public function onDisable(): void{
-        $this->getLogger()->info("AntiAltAccounts has been disabled!");
-    }
-
-    public function onPlayerJoin(PlayerJoinEvent $event) {
+    public function onPlayerJoin(PlayerJoinEvent $event): void {
         $player = $event->getPlayer();
         $ip = $player->getNetworkSession()->getIp();
-        $playerName = $player->getName();
-        
-        if ($this->isAltIP($playerName, $ip)) {
-            $player->kick(TF::RED . "Your account has been §cbanned§f for being having alt!");
-            $this->getServer()->getIPBans()->addBan($ip, "Alt Account Detected", null, $playerName);
-            return;
+
+        $this->saveIP($ip, $player->getName());
+
+        if ($this->isAltIP($ip, $player->getName())) {
+            $player->kick($this->getConfig()->get("Ban-Message"));
+            $this->getServer()->getNameBans()->addBan($ip, "Alt Account Detected", NULL, $player->getName());
         }
-        $this->savePlayerIP($playerName, $ip);
     }
 
-    private function isAltIP(string $playerName, string $ip): bool {
+    private function saveIP(string $ip, string $playerName): void {
         $data = new Config($this->getDataFolder() . "ip_data.json", Config::JSON);
-        return $data->exists($playerName) && $data->get($playerName) === $ip;
+        if (!$data->exists($ip)) {
+            $data->set($ip, $playerName);
+            $data->save();
+        }
     }
 
-    private function savePlayerIP(string $playerName, string $ip) {
+    private function isAltIP(string $ip, string $playerName): bool {
         $data = new Config($this->getDataFolder() . "ip_data.json", Config::JSON);
-        $data->set($playerName, $ip);
-        $data->save();
+        return $data->exists($ip) !== false && $data->get($ip) !== $playerName;
     }
 }
