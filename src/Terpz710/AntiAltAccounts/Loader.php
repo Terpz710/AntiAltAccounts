@@ -8,23 +8,40 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\utils\Config;
+use DateTime;
 
 class Loader extends PluginBase implements Listener {
 
-    public function onEnable(): void{
+    public function onEnable() : void{
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->saveDefaultConfig();
     }
 
-    public function onPlayerJoin(PlayerJoinEvent $event): void {
+    public function onPlayerJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
         $ip = $player->getNetworkSession()->getIp();
 
         $this->saveIP($ip, $player->getName());
 
         if ($this->isAltIP($ip, $player->getName())) {
-            $player->kick($this->getConfig()->get("Ban-Message"));
-            $this->getServer()->getNameBans()->addBan($ip, "Alt Account Detected", NULL, $player->getName());
+            $banOrKick = $this->getConfig()->get("Ban-Or-Kick", "ban");
+            $banMessage = $this->getConfig()->get("Ban-Message");
+            
+            if ($banOrKick === "ban") {
+                $banReason = $this->getConfig()->get("Ban-Reason", "Alt Account Detected");
+                $banDuration = $this->getConfig()->get("Ban-Duration", "NULL");
+
+                if ($banDuration === "NULL") {
+                    $banExpiry = null;
+                } else {
+                    $banExpiry = (new DateTime())->modify("+$banDuration")->getTimestamp();
+                }
+
+                $player->kick($banMessage);
+                $this->getServer()->getNameBans()->addBan($ip, $banReason, $banExpiry, $player->getName());
+            } else {//Add discord logs
+                $player->kick($banMessage);
+            }
         }
     }
 
