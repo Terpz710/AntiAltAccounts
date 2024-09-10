@@ -6,6 +6,6 @@ projects:
   AntiAltAccounts:
     path: ""
     libs:
-      - src: fernanACM/DiscordWebhookAPI/DiscordWebhookAPI
+      - src: CortexPE/DiscordWebhookAPI/DiscordWebhookAPI
         version: ^1.0.3
 ...
