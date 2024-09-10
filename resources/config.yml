@@ -4,3 +4,5 @@ Ban-Or-Kick: "ban" # Options: "ban" or "kick"
 Ban-Message: "You have been banned for using an alt account."
 Ban-Reason: "Alt Account Detected"
 Ban-Duration: "1 day" # Acceptable formats: "1 day", "2 hours", "NULL" for permanent ban
+
+discord-webhook-url: "https://discord.com/api/webhooks/your-webhook-url"
