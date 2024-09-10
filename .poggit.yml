@@ -7,5 +7,5 @@ projects:
     path: ""
     libs:
       - src: CortexPE/DiscordWebhookAPI/DiscordWebhookAPI
-        version: ^1.0.3
+        version: ^1.0.1
 ...
