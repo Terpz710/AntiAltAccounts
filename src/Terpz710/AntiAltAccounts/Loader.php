@@ -29,7 +29,7 @@ class Loader extends PluginBase implements Listener {
 
     public function onPlayerJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
-        $ip = $player->getNetworkSession()->getIp();
+        $ip = hash('sha256', $player->getNetworkSession()->getIp());
 
         $this->saveIP($ip, $player->getName());
 
