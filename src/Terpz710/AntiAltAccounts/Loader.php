@@ -5,19 +5,23 @@ declare(strict_types=1);
 namespace Terpz710\AntiAltAccounts;
 
 use pocketmine\plugin\PluginBase;
+
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
+
 use pocketmine\utils\Config;
+
 use CortexPE\DiscordWebhookAPI\Webhook;
 use CortexPE\DiscordWebhookAPI\Message;
 use CortexPE\DiscordWebhookAPI\Embed;
+
 use DateTime;
 
-class Loader extends PluginBase implements Listener {
+final class Loader extends PluginBase implements Listener {
 
     private Webhook $webhook;
 
-    public function onEnable() : void{
+    protected function onEnable() : void{
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->saveDefaultConfig();
 
@@ -27,7 +31,7 @@ class Loader extends PluginBase implements Listener {
         }
     }
 
-    public function onPlayerJoin(PlayerJoinEvent $event) {
+    public function onPlayerJoin(PlayerJoinEvent $event) : void{
         $player = $event->getPlayer();
         $ip = hash('sha256', $player->getNetworkSession()->getIp());
 
@@ -41,10 +45,14 @@ class Loader extends PluginBase implements Listener {
                 $banReason = $this->getConfig()->get("Ban-Reason", "Alt Account Detected");
                 $banDuration = $this->getConfig()->get("Ban-Duration", "NULL");
 
-                if ($banDuration === "NULL") {
-                    $banExpiry = null;
-                } else {
-                    $banExpiry = (new DateTime())->modify("+$banDuration")->getTimestamp();
+                $banExpiry = null;
+                if ($banDuration !== "NULL") {
+                    try {
+                        $banExpiry = (new DateTime())->modify("+$banDuration");
+                    } catch (\Exception $e) {
+                        $this->getLogger()->error("Invalid ban duration format: $banDuration");
+                        return;
+                    }
                 }
 
                 $player->kick($banMessage);
@@ -58,7 +66,7 @@ class Loader extends PluginBase implements Listener {
         }
     }
 
-    private function saveIP(string $ip, string $playerName): void {
+    private function saveIP(string $ip, string $playerName) : void{
         $data = new Config($this->getDataFolder() . "ip_data.json", Config::JSON);
         if (!$data->exists($ip)) {
             $data->set($ip, $playerName);
@@ -66,7 +74,7 @@ class Loader extends PluginBase implements Listener {
         }
     }
 
-    private function isAltIP(string $ip, string $playerName): bool {
+    private function isAltIP(string $ip, string $playerName) : bool{
         $data = new Config($this->getDataFolder() . "ip_data.json", Config::JSON);
         return $data->exists($ip) !== false && $data->get($ip) !== $playerName;
     }
@@ -78,7 +86,7 @@ class Loader extends PluginBase implements Listener {
 
             $embed = new Embed();
             $embed->setTitle("Alt Account Detected");
-            $embed->setDescription("**Player:** $playerName\n**IP:** $ip\n**Action:** $action\n**Reason:** $reason");
+            $embed->setDescription("**Player:** $playerName\n**Action:** $action\n**Reason:** $reason");
             $embed->setColor(0xFF0000);
             $embed->setTimestamp(new DateTime());
 
