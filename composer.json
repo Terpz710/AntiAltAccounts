@@ -1,0 +1,15 @@
+{
+    "name": "terpz710/antialtaccounts",
+    "type": "project",
+    "license": "Apache License 2.0",
+    "require": {
+        "pocketmine/pocketmine-mp": "^5.0.0",
+        "acm-pocketmine-mp/discordwebhookapi": "*",
+        "dapigguy/libpiggyupdatechecker": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "AntiAltAccounts\\": "src/AntiAltAccounts"
+        }
+    }
+}
