@@ -8,5 +8,7 @@ projects:
     libs:
       - src: ACM-PocketMine-MP/DiscordWebhookAPI/DiscordWebhookAPI
         version: ^1.0.3
+      - src: DaPigGuy/libPiggyUpdateChecker/libPiggyUpdateChecker
+        version: ^1.0.0
     lint: false
 ...
