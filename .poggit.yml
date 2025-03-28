@@ -6,6 +6,7 @@ projects:
   AntiAltAccounts:
     path: ""
     libs:
-      - src: xqwtxon/DiscordWebhookAPI/DiscordWebhookAPI
-        version: ^2.0.0
+      - src: ACM-PocketMine-MP/DiscordWebhookAPI/DiscordWebhookAPI
+        version: ^1.0.3
+    lint: false
 ...
