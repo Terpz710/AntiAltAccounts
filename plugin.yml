@@ -1,5 +1,5 @@
 name: AntiAltAccounts
-version: 1.0.4
+version: 1.0.5
 author: Terpz710
 api: 5.0.0
 main: Terpz710\AntiAltAccounts\Loader
