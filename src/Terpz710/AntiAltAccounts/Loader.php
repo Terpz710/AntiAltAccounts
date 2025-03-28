@@ -15,6 +15,8 @@ use CortexPE\DiscordWebhookAPI\Webhook;
 use CortexPE\DiscordWebhookAPI\Message;
 use CortexPE\DiscordWebhookAPI\Embed;
 
+use DaPigGuy\libPiggyUpdateChecker\libPiggyUpdateChecker;
+
 use DateTime;
 
 final class Loader extends PluginBase implements Listener {
@@ -26,9 +28,12 @@ final class Loader extends PluginBase implements Listener {
         $this->saveDefaultConfig();
 
         $webhookUrl = $this->getConfig()->get("discord-webhook-url");
+        
         if($webhookUrl !== null && filter_var($webhookUrl, FILTER_VALIDATE_URL)){
             $this->webhook = new Webhook($webhookUrl);
         }
+
+        libPiggyUpdateChecker::init($this);
     }
 
     public function onPlayerJoin(PlayerJoinEvent $event) : void{
